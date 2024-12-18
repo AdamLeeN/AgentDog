@@ -3,7 +3,9 @@ import wave
 #from openai import OpenAI  # 不再使用 OpenAI 的音频 API
 import os
 from llm_utils import SeeWhat
-from langchain_openai import ChatOpenAI
+from langchain_ollama import ChatOllama
+
+
 from langchain_openai import OpenAI
 from langchain.agents import tool
 import requests
@@ -22,7 +24,13 @@ config = {
 client = OpenAI(api_key=config["api_key"], base_url=config["base_url"])
 os.environ["OPENAI_API_KEY"] = config["api_key"]
 os.environ["openai_api_base"] = config["base_url"]
-llm = OpenAI(temperature=1, callbacks=[SeeWhat()])
+llm = ChatOllama(
+    base_url="http://localhost:11434",
+    model = "qwen2.5:3b",
+    temperature = 0.01,
+    num_predict = 4096,
+    # other params ...
+)
 
 @tool
 def OBEY(instruction: str = 'turn_left', step: str = '1'):
